@@ -1,0 +1,2771 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Study Space — Your Productivity Sanctuary</title>
+
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <!-- Font Awesome -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet" />
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+
+  <style>
+    /* ===========================
+       CSS VARIABLES & THEME
+    =========================== */
+    :root {
+      --bg-main: #f5f0eb;
+      --bg-card: #ffffff;
+      --bg-sidebar: #1a1a2e;
+      --bg-sidebar-hover: #16213e;
+      --text-primary: #1a1a2e;
+      --text-secondary: #6b7280;
+      --text-sidebar: #c8d0e0;
+      --text-sidebar-active: #ffffff;
+      --accent: #e07b54;
+      --accent-2: #6c63ff;
+      --accent-3: #3ecf8e;
+      --accent-4: #f5c842;
+      --border: #e5e0d8;
+      --shadow: 0 4px 24px rgba(0,0,0,0.08);
+      --shadow-hover: 0 8px 32px rgba(0,0,0,0.14);
+      --radius: 16px;
+      --sidebar-width: 240px;
+    }
+
+    [data-theme="dark"] {
+      --bg-main: #0f0f1a;
+      --bg-card: #1a1a2e;
+      --bg-sidebar: #0a0a15;
+      --bg-sidebar-hover: #16213e;
+      --text-primary: #e8e0d8;
+      --text-secondary: #9098a9;
+      --border: #2a2a40;
+      --shadow: 0 4px 24px rgba(0,0,0,0.3);
+      --shadow-hover: 0 8px 32px rgba(0,0,0,0.5);
+    }
+
+    /* ===========================
+       GLOBAL RESET & BASE
+    =========================== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg-main);
+      color: var(--text-primary);
+      min-height: 100vh;
+      transition: background 0.35s, color 0.35s;
+      overflow-x: hidden;
+    }
+
+    h1, h2, h3, h4 { font-family: 'Playfair Display', serif; }
+
+    a { text-decoration: none; color: inherit; }
+
+    /* ===========================
+       AUTH PAGES (Login / Signup)
+    =========================== */
+    #auth-wrapper {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    #auth-wrapper::before {
+      content: '';
+      position: absolute;
+      width: 600px; height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(224,123,84,0.15) 0%, transparent 70%);
+      top: -200px; right: -200px;
+      pointer-events: none;
+    }
+
+    #auth-wrapper::after {
+      content: '';
+      position: absolute;
+      width: 400px; height: 400px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(108,99,255,0.12) 0%, transparent 70%);
+      bottom: -100px; left: -100px;
+      pointer-events: none;
+    }
+
+    .auth-card {
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 24px;
+      padding: 48px 40px;
+      width: 100%;
+      max-width: 440px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .auth-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 32px;
+    }
+
+    .auth-logo-icon {
+      width: 44px; height: 44px;
+      background: var(--accent);
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px; color: white;
+    }
+
+    .auth-logo-text {
+      font-family: 'Playfair Display', serif;
+      font-size: 22px;
+      color: #fff;
+      font-weight: 700;
+    }
+
+    .auth-title {
+      font-size: 28px;
+      color: #fff;
+      margin-bottom: 6px;
+    }
+
+    .auth-subtitle {
+      color: rgba(255,255,255,0.5);
+      font-size: 14px;
+      margin-bottom: 32px;
+    }
+
+    .auth-input-group {
+      margin-bottom: 18px;
+    }
+
+    .auth-input-group label {
+      display: block;
+      color: rgba(255,255,255,0.7);
+      font-size: 13px;
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+
+    .auth-input {
+      width: 100%;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 12px;
+      padding: 12px 16px;
+      color: #fff;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      outline: none;
+      transition: border 0.2s, background 0.2s;
+    }
+
+    .auth-input::placeholder { color: rgba(255,255,255,0.3); }
+    .auth-input:focus {
+      border-color: var(--accent);
+      background: rgba(255,255,255,0.12);
+    }
+
+    .auth-btn {
+      width: 100%;
+      padding: 14px;
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+      margin-top: 8px;
+    }
+
+    .auth-btn:hover {
+      background: #c9643f;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(224,123,84,0.35);
+    }
+
+    .auth-switch {
+      text-align: center;
+      margin-top: 24px;
+      color: rgba(255,255,255,0.5);
+      font-size: 14px;
+    }
+
+    .auth-switch a {
+      color: var(--accent);
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .auth-error {
+      background: rgba(239,68,68,0.15);
+      border: 1px solid rgba(239,68,68,0.3);
+      border-radius: 10px;
+      padding: 10px 14px;
+      color: #fca5a5;
+      font-size: 13px;
+      margin-bottom: 16px;
+      display: none;
+    }
+
+    /* ===========================
+       MAIN APP LAYOUT
+    =========================== */
+    #app-wrapper {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* SIDEBAR */
+    #sidebar {
+      width: var(--sidebar-width);
+      background: var(--bg-sidebar);
+      min-height: 100vh;
+      position: fixed;
+      top: 0; left: 0;
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.3s ease;
+    }
+
+    .sidebar-logo {
+      padding: 24px 20px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .sidebar-logo-icon {
+      width: 36px; height: 36px;
+      background: var(--accent);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; color: white;
+      flex-shrink: 0;
+    }
+
+    .sidebar-logo-text {
+      font-family: 'Playfair Display', serif;
+      font-size: 18px;
+      color: white;
+      font-weight: 700;
+    }
+
+    .sidebar-nav {
+      flex: 1;
+      padding: 20px 12px;
+      overflow-y: auto;
+    }
+
+    .sidebar-nav-label {
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: rgba(255,255,255,0.25);
+      padding: 0 8px;
+      margin: 16px 0 8px;
+    }
+
+    .sidebar-nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 11px 14px;
+      border-radius: 12px;
+      color: var(--text-sidebar);
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s, transform 0.15s;
+      margin-bottom: 2px;
+    }
+
+    .sidebar-nav-item:hover {
+      background: var(--bg-sidebar-hover);
+      color: white;
+      transform: translateX(3px);
+    }
+
+    .sidebar-nav-item.active {
+      background: var(--accent);
+      color: white;
+    }
+
+    .sidebar-nav-item i {
+      width: 18px;
+      text-align: center;
+      font-size: 15px;
+    }
+
+    .sidebar-footer {
+      padding: 16px 12px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .sidebar-user {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      border-radius: 12px;
+      margin-bottom: 6px;
+    }
+
+    .sidebar-avatar {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      background: var(--accent);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; color: white; font-weight: 600;
+      flex-shrink: 0;
+    }
+
+    .sidebar-username {
+      color: rgba(255,255,255,0.8);
+      font-size: 13px;
+      font-weight: 500;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .sidebar-logout {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      border-radius: 12px;
+      color: rgba(255,255,255,0.4);
+      font-size: 13px;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .sidebar-logout:hover {
+      background: rgba(239,68,68,0.15);
+      color: #fca5a5;
+    }
+
+    /* MAIN CONTENT */
+    #main-content {
+      margin-left: var(--sidebar-width);
+      flex: 1;
+      padding: 32px;
+      min-height: 100vh;
+      transition: margin 0.3s;
+    }
+
+    /* TOP BAR */
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 32px;
+    }
+
+    .topbar-left h2 {
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .topbar-left p {
+      color: var(--text-secondary);
+      font-size: 14px;
+      margin-top: 2px;
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .topbar-date {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 8px 14px;
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .hamburger-btn {
+      display: none;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 8px 12px;
+      cursor: pointer;
+      color: var(--text-primary);
+      font-size: 16px;
+    }
+
+    /* CARDS */
+    .ss-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      transition: box-shadow 0.25s, transform 0.25s;
+      overflow: hidden;
+    }
+
+    .ss-card:hover {
+      box-shadow: var(--shadow-hover);
+      transform: translateY(-3px);
+    }
+
+    .ss-card-body { padding: 24px; }
+    .ss-card-header {
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .ss-card-header h4 {
+      font-size: 17px;
+      font-weight: 600;
+    }
+
+    /* ICON BADGES */
+    .icon-badge {
+      width: 48px; height: 48px;
+      border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px;
+      margin-bottom: 16px;
+    }
+
+    .icon-badge.orange { background: rgba(224,123,84,0.12); color: var(--accent); }
+    .icon-badge.purple { background: rgba(108,99,255,0.12); color: var(--accent-2); }
+    .icon-badge.green  { background: rgba(62,207,142,0.12); color: var(--accent-3); }
+    .icon-badge.yellow { background: rgba(245,200,66,0.12); color: var(--accent-4); }
+
+    /* BUTTONS */
+    .btn-ss {
+      padding: 9px 20px;
+      border-radius: 10px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s, background 0.15s;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .btn-ss:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.12); }
+    .btn-ss:active { transform: translateY(0); }
+
+    .btn-primary-ss { background: var(--accent); color: white; }
+    .btn-primary-ss:hover { background: #c9643f; }
+    .btn-secondary-ss { background: var(--bg-main); color: var(--text-primary); border: 1px solid var(--border); }
+    .btn-danger-ss { background: rgba(239,68,68,0.1); color: #ef4444; }
+    .btn-danger-ss:hover { background: rgba(239,68,68,0.2); }
+    .btn-success-ss { background: rgba(62,207,142,0.12); color: var(--accent-3); }
+
+    /* PAGE SECTIONS */
+    .page-section { display: none; animation: fadeSlide 0.35s ease; }
+    .page-section.active { display: block; }
+
+    @keyframes fadeSlide {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ===========================
+       DASHBOARD PAGE
+    =========================== */
+    .welcome-banner {
+      background: linear-gradient(135deg, #1a1a2e 0%, #0f3460 100%);
+      border-radius: var(--radius);
+      padding: 32px 36px;
+      margin-bottom: 28px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .welcome-banner::before {
+      content: '';
+      position: absolute;
+      width: 300px; height: 300px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(224,123,84,0.2) 0%, transparent 70%);
+      top: -100px; right: -80px;
+    }
+
+    .welcome-banner h1 {
+      color: white;
+      font-size: 30px;
+      margin-bottom: 8px;
+      position: relative;
+    }
+
+    .welcome-banner p {
+      color: rgba(255,255,255,0.6);
+      font-size: 15px;
+      position: relative;
+    }
+
+    .welcome-banner .accent-dot {
+      color: var(--accent);
+    }
+
+    .quote-card {
+      background: linear-gradient(135deg, var(--accent) 0%, #c9643f 100%);
+      border-radius: var(--radius);
+      padding: 24px 28px;
+      margin-bottom: 28px;
+      color: white;
+    }
+
+    .quote-card .quote-icon {
+      font-size: 28px;
+      opacity: 0.4;
+      margin-bottom: 10px;
+    }
+
+    .quote-card .quote-text {
+      font-family: 'Playfair Display', serif;
+      font-size: 18px;
+      line-height: 1.5;
+      margin-bottom: 8px;
+    }
+
+    .quote-card .quote-author {
+      font-size: 13px;
+      opacity: 0.7;
+    }
+
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 20px;
+      margin-bottom: 28px;
+    }
+
+    .dash-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: var(--shadow);
+      transition: box-shadow 0.25s, transform 0.25s;
+      cursor: pointer;
+    }
+
+    .dash-card:hover {
+      box-shadow: var(--shadow-hover);
+      transform: translateY(-4px);
+    }
+
+    .dash-card .card-label {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      margin-bottom: 4px;
+    }
+
+    .dash-card .card-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 20px;
+      margin-bottom: 10px;
+    }
+
+    .dash-card .card-desc {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      margin-bottom: 16px;
+    }
+
+    /* ===========================
+       STUDY ROOM
+    =========================== */
+    .task-input-row {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .task-input {
+      flex: 1;
+      background: var(--bg-main);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 16px;
+      color: var(--text-primary);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      outline: none;
+      transition: border 0.2s;
+    }
+
+    .task-input:focus { border-color: var(--accent); }
+    .task-input::placeholder { color: var(--text-secondary); }
+
+    .task-list { list-style: none; }
+
+    .task-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border);
+      animation: fadeSlide 0.25s ease;
+    }
+
+    .task-item:last-child { border-bottom: none; }
+
+    .task-checkbox {
+      width: 20px; height: 20px;
+      border-radius: 6px;
+      border: 2px solid var(--border);
+      appearance: none;
+      cursor: pointer;
+      transition: background 0.2s, border 0.2s;
+      flex-shrink: 0;
+      position: relative;
+    }
+
+    .task-checkbox:checked {
+      background: var(--accent-3);
+      border-color: var(--accent-3);
+    }
+
+    .task-checkbox:checked::after {
+      content: '\f00c';
+      font-family: 'Font Awesome 6 Free';
+      font-weight: 900;
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 10px;
+      color: white;
+    }
+
+    .task-text {
+      flex: 1;
+      font-size: 14px;
+      transition: color 0.2s;
+    }
+
+    .task-item.completed .task-text {
+      text-decoration: line-through;
+      color: var(--text-secondary);
+    }
+
+    .task-delete-btn {
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 8px;
+      font-size: 13px;
+      transition: color 0.2s, background 0.2s;
+    }
+
+    .task-delete-btn:hover { color: #ef4444; background: rgba(239,68,68,0.1); }
+
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .stat-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px;
+      text-align: center;
+    }
+
+    .stat-box .stat-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .stat-box .stat-label {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-top: 4px;
+    }
+
+    /* ===========================
+       POMODORO TIMER
+    =========================== */
+    .timer-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px;
+    }
+
+    .timer-modes {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 40px;
+      background: var(--bg-main);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 5px;
+    }
+
+    .timer-mode-btn {
+      padding: 9px 20px;
+      border-radius: 10px;
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .timer-mode-btn.active {
+      background: var(--accent);
+      color: white;
+    }
+
+    .timer-display {
+      position: relative;
+      width: 240px; height: 240px;
+      margin-bottom: 36px;
+    }
+
+    .timer-svg {
+      width: 100%; height: 100%;
+      transform: rotate(-90deg);
+    }
+
+    .timer-track {
+      fill: none;
+      stroke: var(--border);
+      stroke-width: 8;
+    }
+
+    .timer-progress {
+      fill: none;
+      stroke: var(--accent);
+      stroke-width: 8;
+      stroke-linecap: round;
+      transition: stroke-dashoffset 0.5s linear;
+    }
+
+    .timer-text {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+    }
+
+    .timer-time {
+      font-family: 'Playfair Display', serif;
+      font-size: 52px;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1;
+    }
+
+    .timer-label {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-top: 6px;
+    }
+
+    .timer-controls {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+    }
+
+    .timer-btn {
+      padding: 14px 28px;
+      border-radius: 12px;
+      border: none;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .timer-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,0.15); }
+
+    .timer-btn.start { background: var(--accent); color: white; }
+    .timer-btn.pause { background: var(--accent-2); color: white; }
+    .timer-btn.reset { background: var(--bg-main); color: var(--text-primary); border: 1px solid var(--border); }
+
+    .session-info {
+      margin-top: 28px;
+      text-align: center;
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+
+    .session-count {
+      display: inline-flex;
+      gap: 6px;
+      margin-top: 10px;
+    }
+
+    .session-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: var(--border);
+      transition: background 0.3s;
+    }
+
+    .session-dot.done { background: var(--accent); }
+
+    /* ===========================
+       MUSIC PAGE
+    =========================== */
+    .music-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .music-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      transition: box-shadow 0.25s, transform 0.25s;
+    }
+
+    .music-card:hover {
+      box-shadow: var(--shadow-hover);
+      transform: translateY(-4px);
+    }
+
+    .music-card-art {
+      height: 150px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 52px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .music-card-art.lofi {
+      background: linear-gradient(135deg, #1a1a2e, #16213e);
+    }
+
+    .music-card-art.rain {
+      background: linear-gradient(135deg, #0f3460, #1a4a7a);
+    }
+
+    .music-card-art.piano {
+      background: linear-gradient(135deg, #2d1b4e, #4a2b7a);
+    }
+
+    .music-card-art .art-pulse {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.05);
+      animation: pulse-ring 3s infinite;
+    }
+
+    @keyframes pulse-ring {
+      0%   { transform: scale(0.8); opacity: 0.5; }
+      50%  { transform: scale(1.2); opacity: 0.1; }
+      100% { transform: scale(0.8); opacity: 0.5; }
+    }
+
+    .music-card-body { padding: 20px; }
+
+    .music-card-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 17px;
+      margin-bottom: 4px;
+    }
+
+    .music-card-sub {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-bottom: 16px;
+    }
+
+    .music-player-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .play-btn {
+      width: 38px; height: 38px;
+      border-radius: 50%;
+      background: var(--accent);
+      border: none;
+      color: white;
+      font-size: 13px;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: transform 0.2s, background 0.2s;
+      flex-shrink: 0;
+    }
+
+    .play-btn:hover { transform: scale(1.1); background: #c9643f; }
+
+    .progress-bar-wrap {
+      flex: 1;
+      height: 4px;
+      background: var(--border);
+      border-radius: 4px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 4px;
+      width: 0%;
+      transition: width 0.3s linear;
+    }
+
+    .music-visualizer {
+      display: flex;
+      align-items: flex-end;
+      gap: 3px;
+      height: 24px;
+      margin-left: 8px;
+    }
+
+    .viz-bar {
+      width: 3px;
+      background: var(--accent);
+      border-radius: 2px;
+      animation: none;
+    }
+
+    .viz-bar.playing {
+      animation: viz-dance 0.6s ease-in-out infinite alternate;
+    }
+
+    .viz-bar:nth-child(1) { animation-delay: 0s; }
+    .viz-bar:nth-child(2) { animation-delay: 0.15s; }
+    .viz-bar:nth-child(3) { animation-delay: 0.3s; }
+    .viz-bar:nth-child(4) { animation-delay: 0.1s; }
+    .viz-bar:nth-child(5) { animation-delay: 0.25s; }
+
+    @keyframes viz-dance {
+      from { height: 4px; }
+      to   { height: 20px; }
+    }
+
+    /* ===========================
+       PROGRESS PAGE
+    =========================== */
+    .hours-input-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+
+    .hours-input-wrap {
+      text-align: center;
+    }
+
+    .hours-label {
+      display: block;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+    }
+
+    .hours-input {
+      width: 100%;
+      text-align: center;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 6px;
+      color: var(--text-primary);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      outline: none;
+      transition: border 0.2s;
+    }
+
+    .hours-input:focus { border-color: var(--accent); }
+
+    .chart-container {
+      position: relative;
+      height: 300px;
+    }
+
+    .progress-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-top: 24px;
+    }
+
+    /* ===========================
+       ABOUT PAGE
+    =========================== */
+    .about-hero {
+      background: linear-gradient(135deg, #1a1a2e 0%, #0f3460 100%);
+      border-radius: var(--radius);
+      padding: 48px;
+      margin-bottom: 28px;
+      text-align: center;
+      color: white;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .about-hero::before {
+      content: '';
+      position: absolute;
+      width: 400px; height: 400px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(108,99,255,0.15), transparent);
+      top: -150px; left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .about-hero h1 { font-size: 36px; margin-bottom: 12px; position: relative; }
+    .about-hero p { color: rgba(255,255,255,0.65); font-size: 16px; position: relative; max-width: 500px; margin: 0 auto; }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 20px;
+      margin-top: 28px;
+    }
+
+    .feature-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: var(--shadow);
+      transition: box-shadow 0.25s, transform 0.25s;
+    }
+
+    .feature-card:hover {
+      box-shadow: var(--shadow-hover);
+      transform: translateY(-3px);
+    }
+
+    .feature-card h5 {
+      font-size: 16px;
+      margin-bottom: 8px;
+      margin-top: 14px;
+    }
+
+    .feature-card p {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    /* ===========================
+       SETTINGS PAGE
+    =========================== */
+    .settings-section {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-bottom: 20px;
+      overflow: hidden;
+    }
+
+    .settings-section-header {
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--border);
+      font-size: 15px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--text-primary);
+    }
+
+    .settings-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 24px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .settings-row:last-child { border-bottom: none; }
+
+    .settings-row-left h6 {
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 2px;
+    }
+
+    .settings-row-left p {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    .settings-input {
+      background: var(--bg-main);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 9px 14px;
+      color: var(--text-primary);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      outline: none;
+      transition: border 0.2s;
+      min-width: 200px;
+    }
+
+    .settings-input:focus { border-color: var(--accent); }
+
+    /* TOGGLE */
+    .toggle-switch {
+      position: relative;
+      width: 48px; height: 26px;
+    }
+
+    .toggle-switch input { opacity: 0; width: 0; height: 0; }
+
+    .toggle-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: var(--border);
+      border-radius: 26px;
+      transition: 0.3s;
+    }
+
+    .toggle-slider::before {
+      content: '';
+      position: absolute;
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      background: white;
+      left: 3px; bottom: 3px;
+      transition: 0.3s;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+    input:checked + .toggle-slider { background: var(--accent); }
+    input:checked + .toggle-slider::before { transform: translateX(22px); }
+
+    /* TOAST */
+    .toast-container {
+      position: fixed;
+      bottom: 24px; right: 24px;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .toast {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+      animation: slideIn 0.3s ease;
+      min-width: 260px;
+      max-width: 340px;
+    }
+
+    .toast.removing { animation: slideOut 0.3s ease forwards; }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(60px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+
+    @keyframes slideOut {
+      from { opacity: 1; transform: translateX(0); }
+      to   { opacity: 0; transform: translateX(60px); }
+    }
+
+    .toast-icon { font-size: 18px; }
+    .toast-text { font-size: 14px; font-weight: 500; }
+    .toast.success .toast-icon { color: var(--accent-3); }
+    .toast.info .toast-icon { color: var(--accent-2); }
+    .toast.warning .toast-icon { color: var(--accent-4); }
+
+    /* MODAL */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      backdrop-filter: blur(4px);
+      z-index: 999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: fadeIn 0.2s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+
+    .modal-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 32px;
+      max-width: 400px;
+      width: 90%;
+      animation: scaleIn 0.25s ease;
+    }
+
+    @keyframes scaleIn {
+      from { opacity: 0; transform: scale(0.9); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+
+    .modal-box h4 { margin-bottom: 10px; }
+    .modal-box p  { font-size: 14px; color: var(--text-secondary); margin-bottom: 24px; }
+    .modal-actions { display: flex; gap: 12px; justify-content: flex-end; }
+
+    /* MOBILE OVERLAY */
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 99;
+    }
+
+    /* ===========================
+       RESPONSIVE
+    =========================== */
+    @media (max-width: 768px) {
+      #sidebar {
+        transform: translateX(-100%);
+      }
+
+      #sidebar.open {
+        transform: translateX(0);
+      }
+
+      #main-content {
+        margin-left: 0;
+        padding: 20px 16px;
+      }
+
+      .hamburger-btn { display: block; }
+      .sidebar-overlay.show { display: block; }
+
+      .hours-input-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+
+      .stats-row { grid-template-columns: repeat(2, 1fr); }
+      .progress-stats { grid-template-columns: repeat(2, 1fr); }
+
+      .topbar { flex-wrap: wrap; gap: 12px; }
+
+      .timer-time { font-size: 40px; }
+      .timer-display { width: 200px; height: 200px; }
+
+      .welcome-banner { padding: 24px; }
+      .welcome-banner h1 { font-size: 24px; }
+
+      .about-hero { padding: 32px 20px; }
+      .about-hero h1 { font-size: 26px; }
+    }
+
+    @media (max-width: 480px) {
+      .hours-input-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ===========================
+       SCROLLBAR
+    =========================== */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 6px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--text-secondary); }
+
+    /* ===========================
+       EMPTY STATE
+    =========================== */
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--text-secondary);
+    }
+
+    .empty-state i {
+      font-size: 40px;
+      margin-bottom: 12px;
+      opacity: 0.3;
+    }
+
+    .empty-state p { font-size: 14px; }
+
+    /* Priority badge */
+    .priority-select {
+      background: var(--bg-main);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 4px 8px;
+      color: var(--text-secondary);
+      font-size: 12px;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .badge-tag {
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 20px;
+      font-weight: 500;
+      margin-right: 6px;
+    }
+
+    .badge-high { background: rgba(239,68,68,0.12); color: #ef4444; }
+    .badge-medium { background: rgba(245,200,66,0.15); color: #b8960c; }
+    .badge-low { background: rgba(62,207,142,0.12); color: var(--accent-3); }
+  </style>
+</head>
+<body>
+
+<!-- ===========================
+     AUTH WRAPPER
+=========================== -->
+<div id="auth-wrapper">
+
+  <!-- LOGIN PAGE -->
+  <div id="login-page" class="auth-card">
+    <div class="auth-logo">
+      <div class="auth-logo-icon"><i class="fas fa-book-open"></i></div>
+      <div class="auth-logo-text">Study Space</div>
+    </div>
+    <h2 class="auth-title">Welcome back</h2>
+    <p class="auth-subtitle">Sign in to continue your learning journey</p>
+    <div class="auth-error" id="login-error"></div>
+    <div class="auth-input-group">
+      <label>Email address</label>
+      <input class="auth-input" type="email" id="login-email" placeholder="you@example.com" />
+    </div>
+    <div class="auth-input-group">
+      <label>Password</label>
+      <input class="auth-input" type="password" id="login-password" placeholder="••••••••" />
+    </div>
+    <button class="auth-btn" onclick="handleLogin()">
+      <i class="fas fa-arrow-right"></i> Sign In
+    </button>
+    <div class="auth-switch">
+      Don't have an account? <a onclick="showPage('signup')">Create one</a>
+    </div>
+  </div>
+
+  <!-- SIGNUP PAGE -->
+  <div id="signup-page" class="auth-card" style="display:none;">
+    <div class="auth-logo">
+      <div class="auth-logo-icon"><i class="fas fa-book-open"></i></div>
+      <div class="auth-logo-text">Study Space</div>
+    </div>
+    <h2 class="auth-title">Create account</h2>
+    <p class="auth-subtitle">Start your productive study journey today</p>
+    <div class="auth-error" id="signup-error"></div>
+    <div class="auth-input-group">
+      <label>Full name</label>
+      <input class="auth-input" type="text" id="signup-name" placeholder="Alex Johnson" />
+    </div>
+    <div class="auth-input-group">
+      <label>Email address</label>
+      <input class="auth-input" type="email" id="signup-email" placeholder="you@example.com" />
+    </div>
+    <div class="auth-input-group">
+      <label>Password</label>
+      <input class="auth-input" type="password" id="signup-password" placeholder="••••••••" />
+    </div>
+    <div class="auth-input-group">
+      <label>Confirm password</label>
+      <input class="auth-input" type="password" id="signup-confirm" placeholder="••••••••" />
+    </div>
+    <button class="auth-btn" onclick="handleSignup()">
+      <i class="fas fa-user-plus"></i> Create Account
+    </button>
+    <div class="auth-switch">
+      Already have an account? <a onclick="showPage('login')">Sign in</a>
+    </div>
+  </div>
+</div>
+
+<!-- ===========================
+     APP WRAPPER (hidden until logged in)
+=========================== -->
+<div id="app-wrapper" style="display:none;">
+
+  <!-- SIDEBAR OVERLAY -->
+  <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
+
+  <!-- SIDEBAR -->
+  <nav id="sidebar">
+    <div class="sidebar-logo">
+      <div class="sidebar-logo-icon"><i class="fas fa-book-open"></i></div>
+      <div class="sidebar-logo-text">Study Space</div>
+    </div>
+
+    <div class="sidebar-nav">
+      <div class="sidebar-nav-label">Main</div>
+      <div class="sidebar-nav-item active" data-page="dashboard" onclick="navigateTo('dashboard')">
+        <i class="fas fa-house"></i> Dashboard
+      </div>
+      <div class="sidebar-nav-item" data-page="about" onclick="navigateTo('about')">
+        <i class="fas fa-circle-info"></i> About
+      </div>
+
+      <div class="sidebar-nav-label">Tools</div>
+      <div class="sidebar-nav-item" data-page="studyroom" onclick="navigateTo('studyroom')">
+        <i class="fas fa-list-check"></i> Study Room
+      </div>
+      <div class="sidebar-nav-item" data-page="timer" onclick="navigateTo('timer')">
+        <i class="fas fa-clock"></i> Pomodoro Timer
+      </div>
+      <div class="sidebar-nav-item" data-page="music" onclick="navigateTo('music')">
+        <i class="fas fa-music"></i> Study Music
+      </div>
+      <div class="sidebar-nav-item" data-page="progress" onclick="navigateTo('progress')">
+        <i class="fas fa-chart-bar"></i> Progress
+      </div>
+
+      <div class="sidebar-nav-label">Account</div>
+      <div class="sidebar-nav-item" data-page="settings" onclick="navigateTo('settings')">
+        <i class="fas fa-gear"></i> Settings
+      </div>
+    </div>
+
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="sidebar-avatar" id="sidebar-avatar">A</div>
+        <div class="sidebar-username" id="sidebar-username">User</div>
+      </div>
+      <div class="sidebar-logout" onclick="handleLogout()">
+        <i class="fas fa-right-from-bracket"></i> Logout
+      </div>
+    </div>
+  </nav>
+
+  <!-- MAIN CONTENT -->
+  <main id="main-content">
+
+    <!-- TOP BAR -->
+    <div class="topbar">
+      <div class="topbar-left">
+        <h2 id="topbar-title">Dashboard</h2>
+        <p id="topbar-subtitle">Good morning — let's get productive!</p>
+      </div>
+      <div class="topbar-right">
+        <div class="topbar-date" id="topbar-date">—</div>
+        <button class="hamburger-btn" onclick="toggleSidebar()">
+          <i class="fas fa-bars"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- ===========================
+         DASHBOARD PAGE
+    =========================== -->
+    <div id="page-dashboard" class="page-section active">
+      <div class="welcome-banner">
+        <h1>Hello, <span class="accent-dot" id="welcome-name">Student</span> <span class="accent-dot">👋</span></h1>
+        <p>Ready to make today count? Your focus zone is all set.</p>
+      </div>
+
+      <div class="quote-card" id="quote-card">
+        <div class="quote-icon"><i class="fas fa-quote-left"></i></div>
+        <div class="quote-text" id="quote-text">The secret of getting ahead is getting started.</div>
+        <div class="quote-author" id="quote-author">— Mark Twain</div>
+      </div>
+
+      <div class="dashboard-grid">
+        <div class="dash-card" onclick="navigateTo('studyroom')">
+          <div class="icon-badge orange"><i class="fas fa-list-check"></i></div>
+          <div class="card-label">Productivity</div>
+          <div class="card-title">Study Room</div>
+          <div class="card-desc">Manage your tasks, track completion and stay on top of your workload.</div>
+          <button class="btn-ss btn-primary-ss">Open <i class="fas fa-arrow-right"></i></button>
+        </div>
+
+        <div class="dash-card" onclick="navigateTo('timer')">
+          <div class="icon-badge purple"><i class="fas fa-clock"></i></div>
+          <div class="card-label">Focus</div>
+          <div class="card-title">Pomodoro Timer</div>
+          <div class="card-desc">Use timed intervals to power through your studies with deep focus sessions.</div>
+          <button class="btn-ss btn-secondary-ss">Start <i class="fas fa-play"></i></button>
+        </div>
+
+        <div class="dash-card" onclick="navigateTo('music')">
+          <div class="icon-badge green"><i class="fas fa-headphones"></i></div>
+          <div class="card-label">Ambience</div>
+          <div class="card-title">Study Music</div>
+          <div class="card-desc">Relax your mind with curated lofi beats, rain sounds and calm piano.</div>
+          <button class="btn-ss btn-secondary-ss">Play <i class="fas fa-music"></i></button>
+        </div>
+
+        <div class="dash-card" onclick="navigateTo('progress')">
+          <div class="icon-badge yellow"><i class="fas fa-chart-bar"></i></div>
+          <div class="card-label">Analytics</div>
+          <div class="card-title">Progress Tracker</div>
+          <div class="card-desc">Visualize your weekly study hours and track your growth over time.</div>
+          <button class="btn-ss btn-secondary-ss">View <i class="fas fa-chart-line"></i></button>
+        </div>
+      </div>
+
+      <!-- Quick Stats -->
+      <div class="stats-row">
+        <div class="stat-box">
+          <div class="stat-num" id="dash-total-tasks">0</div>
+          <div class="stat-label">Total Tasks</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num" id="dash-completed">0</div>
+          <div class="stat-label">Completed</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num" id="dash-study-hours">0h</div>
+          <div class="stat-label">This Week</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===========================
+         ABOUT PAGE
+    =========================== -->
+    <div id="page-about" class="page-section">
+      <div class="about-hero">
+        <h1>About Study Space</h1>
+        <p>Your all-in-one productivity sanctuary designed to help students focus, manage tasks, and reach academic excellence.</p>
+      </div>
+
+      <div class="ss-card mb-4">
+        <div class="ss-card-body">
+          <h4 style="margin-bottom:14px;">What is Study Space?</h4>
+          <p style="color:var(--text-secondary); line-height:1.8; font-size:15px;">
+            Study Space is a beautifully crafted student productivity dashboard that brings together everything you need to excel academically. 
+            From task management and pomodoro timing to relaxing study music and progress tracking — all in one seamless interface. 
+            Built for focused learners who want to make the most of every study session.
+          </p>
+        </div>
+      </div>
+
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="icon-badge orange"><i class="fas fa-list-check"></i></div>
+          <h5>Task Management</h5>
+          <p>Create, complete, and organize your study tasks with priority tagging and local storage persistence.</p>
+        </div>
+        <div class="feature-card">
+          <div class="icon-badge purple"><i class="fas fa-clock"></i></div>
+          <h5>Pomodoro Timer</h5>
+          <p>Built-in Pomodoro technique with 25-min focus, 5-min short breaks, and 15-min long breaks.</p>
+        </div>
+        <div class="feature-card">
+          <div class="icon-badge green"><i class="fas fa-headphones"></i></div>
+          <h5>Study Music</h5>
+          <p>Curated ambient sounds — lofi beats, rain focus, and calm piano — to keep you in the zone.</p>
+        </div>
+        <div class="feature-card">
+          <div class="icon-badge yellow"><i class="fas fa-chart-bar"></i></div>
+          <h5>Progress Tracking</h5>
+          <p>Log and visualize your weekly study hours with dynamic Chart.js bar charts.</p>
+        </div>
+        <div class="feature-card">
+          <div class="icon-badge orange"><i class="fas fa-moon"></i></div>
+          <h5>Dark Mode</h5>
+          <p>Switch between light and dark themes to protect your eyes during late-night study sessions.</p>
+        </div>
+        <div class="feature-card">
+          <div class="icon-badge purple"><i class="fas fa-shield-halved"></i></div>
+          <h5>Local Privacy</h5>
+          <p>All your data stays on your device using localStorage — no accounts, no servers, no data leaks.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===========================
+         STUDY ROOM PAGE
+    =========================== -->
+    <div id="page-studyroom" class="page-section">
+      <div class="stats-row mb-4">
+        <div class="stat-box">
+          <div class="stat-num" id="sr-total">0</div>
+          <div class="stat-label">Total Tasks</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num" id="sr-done">0</div>
+          <div class="stat-label">Completed</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num" id="sr-pending">0</div>
+          <div class="stat-label">Pending</div>
+        </div>
+      </div>
+
+      <div class="ss-card">
+        <div class="ss-card-header">
+          <h4><i class="fas fa-plus" style="color:var(--accent);margin-right:8px;"></i>Add New Task</h4>
+        </div>
+        <div class="ss-card-body">
+          <div class="task-input-row">
+            <input class="task-input" type="text" id="task-input" placeholder="What do you need to study or complete?" onkeydown="if(event.key==='Enter')addTask()" />
+            <select class="priority-select" id="task-priority">
+              <option value="medium">Medium</option>
+              <option value="high">High</option>
+              <option value="low">Low</option>
+            </select>
+            <button class="btn-ss btn-primary-ss" onclick="addTask()">
+              <i class="fas fa-plus"></i> Add
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="ss-card" style="margin-top:20px;">
+        <div class="ss-card-header">
+          <h4><i class="fas fa-list" style="color:var(--accent-2);margin-right:8px;"></i>My Tasks</h4>
+          <button class="btn-ss btn-danger-ss" onclick="confirmClearTasks()">
+            <i class="fas fa-trash"></i> Clear All
+          </button>
+        </div>
+        <div class="ss-card-body">
+          <ul class="task-list" id="task-list">
+            <li>
+              <div class="empty-state">
+                <i class="fas fa-inbox"></i>
+                <p>No tasks yet. Add one above!</p>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===========================
+         POMODORO TIMER PAGE
+    =========================== -->
+    <div id="page-timer" class="page-section">
+      <div class="ss-card">
+        <div class="ss-card-body">
+          <div class="timer-container">
+            <div class="timer-modes">
+              <button class="timer-mode-btn active" id="mode-focus" onclick="setTimerMode('focus',25)">Focus</button>
+              <button class="timer-mode-btn" id="mode-short" onclick="setTimerMode('short',5)">Short Break</button>
+              <button class="timer-mode-btn" id="mode-long" onclick="setTimerMode('long',15)">Long Break</button>
+            </div>
+
+            <div class="timer-display">
+              <svg class="timer-svg" viewBox="0 0 240 240">
+                <circle class="timer-track" cx="120" cy="120" r="106" />
+                <circle class="timer-progress" id="timer-ring" cx="120" cy="120" r="106"
+                  stroke-dasharray="666.17"
+                  stroke-dashoffset="0" />
+              </svg>
+              <div class="timer-text">
+                <div class="timer-time" id="timer-display">25:00</div>
+                <div class="timer-label" id="timer-label">Focus Session</div>
+              </div>
+            </div>
+
+            <div class="timer-controls">
+              <button class="timer-btn reset" onclick="resetTimer()">
+                <i class="fas fa-rotate-left"></i> Reset
+              </button>
+              <button class="timer-btn start" id="timer-start-btn" onclick="toggleTimer()">
+                <i class="fas fa-play"></i> Start
+              </button>
+            </div>
+
+            <div class="session-info">
+              <div>Session <span id="session-num">1</span> of 4</div>
+              <div class="session-count" id="session-dots">
+                <div class="session-dot"></div>
+                <div class="session-dot"></div>
+                <div class="session-dot"></div>
+                <div class="session-dot"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ss-card" style="margin-top:20px;">
+        <div class="ss-card-body">
+          <h4 style="margin-bottom:16px;">Timer Tips</h4>
+          <div class="row g-3">
+            <div class="col-md-4">
+              <div style="padding:16px; background:rgba(224,123,84,0.07); border-radius:12px; border:1px solid rgba(224,123,84,0.15);">
+                <i class="fas fa-brain" style="color:var(--accent); font-size:20px; margin-bottom:10px;"></i>
+                <div style="font-weight:600; font-size:14px; margin-bottom:4px;">Focus Mode</div>
+                <div style="font-size:12px; color:var(--text-secondary);">25 minutes of undivided attention. Put your phone away.</div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div style="padding:16px; background:rgba(108,99,255,0.07); border-radius:12px; border:1px solid rgba(108,99,255,0.15);">
+                <i class="fas fa-mug-hot" style="color:var(--accent-2); font-size:20px; margin-bottom:10px;"></i>
+                <div style="font-weight:600; font-size:14px; margin-bottom:4px;">Short Break</div>
+                <div style="font-size:12px; color:var(--text-secondary);">5 minutes to stretch, hydrate, and breathe.</div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div style="padding:16px; background:rgba(62,207,142,0.07); border-radius:12px; border:1px solid rgba(62,207,142,0.15);">
+                <i class="fas fa-person-walking" style="color:var(--accent-3); font-size:20px; margin-bottom:10px;"></i>
+                <div style="font-weight:600; font-size:14px; margin-bottom:4px;">Long Break</div>
+                <div style="font-size:12px; color:var(--text-secondary);">15 minutes after 4 sessions. Walk around and relax.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===========================
+         MUSIC PAGE
+    =========================== -->
+    <div id="page-music" class="page-section">
+      <div class="ss-card mb-4">
+        <div class="ss-card-body" style="display:flex; align-items:center; gap:16px;">
+          <div class="icon-badge green" style="margin-bottom:0; flex-shrink:0;"><i class="fas fa-headphones"></i></div>
+          <div>
+            <h4 style="margin-bottom:4px;">Study Ambience</h4>
+            <p style="font-size:13px; color:var(--text-secondary); margin:0;">Curated sounds to help you enter a state of deep focus. Play your track and let the music guide your concentration.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="music-grid">
+
+        <!-- Track 1: LoFi -->
+        <div class="music-card" id="music-card-0">
+          <div class="music-card-art lofi">
+            <div class="art-pulse" style="width:200px;height:200px;"></div>
+            🎧
+          </div>
+          <div class="music-card-body">
+            <div class="music-card-title">LoFi Study Beat</div>
+            <div class="music-card-sub">Chillhop · Ambient · 120 BPM</div>
+            <div class="music-player-controls">
+              <button class="play-btn" id="play-btn-0" onclick="toggleTrack(0)">
+                <i class="fas fa-play" id="play-icon-0"></i>
+              </button>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" id="bar-0"></div>
+              </div>
+              <div class="music-visualizer" id="viz-0">
+                <div class="viz-bar" style="height:8px;"></div>
+                <div class="viz-bar" style="height:14px;"></div>
+                <div class="viz-bar" style="height:6px;"></div>
+                <div class="viz-bar" style="height:18px;"></div>
+                <div class="viz-bar" style="height:10px;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Track 2: Rain -->
+        <div class="music-card" id="music-card-1">
+          <div class="music-card-art rain">
+            <div class="art-pulse" style="width:200px;height:200px;"></div>
+            🌧️
+          </div>
+          <div class="music-card-body">
+            <div class="music-card-title">Rain Focus Sound</div>
+            <div class="music-card-sub">Nature · White Noise · Calming</div>
+            <div class="music-player-controls">
+              <button class="play-btn" id="play-btn-1" onclick="toggleTrack(1)">
+                <i class="fas fa-play" id="play-icon-1"></i>
+              </button>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" id="bar-1"></div>
+              </div>
+              <div class="music-visualizer" id="viz-1">
+                <div class="viz-bar" style="height:12px;"></div>
+                <div class="viz-bar" style="height:7px;"></div>
+                <div class="viz-bar" style="height:16px;"></div>
+                <div class="viz-bar" style="height:9px;"></div>
+                <div class="viz-bar" style="height:13px;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Track 3: Piano -->
+        <div class="music-card" id="music-card-2">
+          <div class="music-card-art piano">
+            <div class="art-pulse" style="width:200px;height:200px;"></div>
+            🎹
+          </div>
+          <div class="music-card-body">
+            <div class="music-card-title">Calm Piano Music</div>
+            <div class="music-card-sub">Classical · Instrumental · Relaxing</div>
+            <div class="music-player-controls">
+              <button class="play-btn" id="play-btn-2" onclick="toggleTrack(2)">
+                <i class="fas fa-play" id="play-icon-2"></i>
+              </button>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" id="bar-2"></div>
+              </div>
+              <div class="music-visualizer" id="viz-2">
+                <div class="viz-bar" style="height:6px;"></div>
+                <div class="viz-bar" style="height:15px;"></div>
+                <div class="viz-bar" style="height:10px;"></div>
+                <div class="viz-bar" style="height:8px;"></div>
+                <div class="viz-bar" style="height:17px;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ss-card mt-4">
+        <div class="ss-card-body">
+          <p style="font-size:13px; color:var(--text-secondary); text-align:center; margin:0;">
+            <i class="fas fa-info-circle" style="margin-right:6px;"></i>
+            Note: These are simulated audio players. Connect real audio files to enable full playback. The UI and controls are fully functional.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===========================
+         PROGRESS PAGE
+    =========================== -->
+    <div id="page-progress" class="page-section">
+      <div class="ss-card mb-4">
+        <div class="ss-card-header">
+          <h4><i class="fas fa-pen" style="color:var(--accent);margin-right:8px;"></i>Log Study Hours</h4>
+          <button class="btn-ss btn-primary-ss" onclick="saveProgress()">
+            <i class="fas fa-floppy-disk"></i> Save
+          </button>
+        </div>
+        <div class="ss-card-body">
+          <div class="hours-input-grid">
+            <div class="hours-input-wrap">
+              <span class="hours-label">Mon</span>
+              <input class="hours-input" type="number" id="hours-0" min="0" max="24" step="0.5" placeholder="0" />
+            </div>
+            <div class="hours-input-wrap">
+              <span class="hours-label">Tue</span>
+              <input class="hours-input" type="number" id="hours-1" min="0" max="24" step="0.5" placeholder="0" />
+            </div>
+            <div class="hours-input-wrap">
+              <span class="hours-label">Wed</span>
+              <input class="hours-input" type="number" id="hours-2" min="0" max="24" step="0.5" placeholder="0" />
+            </div>
+            <div class="hours-input-wrap">
+              <span class="hours-label">Thu</span>
+              <input class="hours-input" type="number" id="hours-3" min="0" max="24" step="0.5" placeholder="0" />
+            </div>
+            <div class="hours-input-wrap">
+              <span class="hours-label">Fri</span>
+              <input class="hours-input" type="number" id="hours-4" min="0" max="24" step="0.5" placeholder="0" />
+            </div>
+            <div class="hours-input-wrap">
+              <span class="hours-label">Sat</span>
+              <input class="hours-input" type="number" id="hours-5" min="0" max="24" step="0.5" placeholder="0" />
+            </div>
+            <div class="hours-input-wrap">
+              <span class="hours-label">Sun</span>
+              <input class="hours-input" type="number" id="hours-6" min="0" max="24" step="0.5" placeholder="0" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ss-card mb-4">
+        <div class="ss-card-header">
+          <h4><i class="fas fa-chart-bar" style="color:var(--accent-2);margin-right:8px;"></i>Weekly Study Chart</h4>
+        </div>
+        <div class="ss-card-body">
+          <div class="chart-container">
+            <canvas id="progress-chart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="progress-stats">
+        <div class="stat-box">
+          <div class="stat-num" id="prog-total">0h</div>
+          <div class="stat-label">Total This Week</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num" id="prog-avg">0h</div>
+          <div class="stat-label">Daily Average</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num" id="prog-best">0h</div>
+          <div class="stat-label">Best Day</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===========================
+         SETTINGS PAGE
+    =========================== -->
+    <div id="page-settings" class="page-section">
+
+      <!-- Profile Settings -->
+      <div class="settings-section">
+        <div class="settings-section-header">
+          <i class="fas fa-user" style="color:var(--accent);"></i> Profile
+        </div>
+        <div class="settings-row">
+          <div class="settings-row-left">
+            <h6>Display Name</h6>
+            <p>Update how your name appears across the app</p>
+          </div>
+          <div style="display:flex; gap:10px; align-items:center;">
+            <input class="settings-input" type="text" id="settings-name" placeholder="Enter new name" />
+            <button class="btn-ss btn-primary-ss" onclick="updateUsername()">Save</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Appearance -->
+      <div class="settings-section">
+        <div class="settings-section-header">
+          <i class="fas fa-palette" style="color:var(--accent-2);"></i> Appearance
+        </div>
+        <div class="settings-row">
+          <div class="settings-row-left">
+            <h6>Dark Mode</h6>
+            <p>Switch to a dark color scheme for low-light environments</p>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="dark-mode-toggle" onchange="toggleDarkMode()" />
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Data Management -->
+      <div class="settings-section">
+        <div class="settings-section-header">
+          <i class="fas fa-database" style="color:var(--accent-3);"></i> Data Management
+        </div>
+        <div class="settings-row">
+          <div class="settings-row-left">
+            <h6>Clear All Tasks</h6>
+            <p>Permanently delete all tasks in your study room</p>
+          </div>
+          <button class="btn-ss btn-danger-ss" onclick="confirmClearTasks()">
+            <i class="fas fa-trash"></i> Clear Tasks
+          </button>
+        </div>
+        <div class="settings-row">
+          <div class="settings-row-left">
+            <h6>Reset Study Progress</h6>
+            <p>Clear all weekly study hours from the progress tracker</p>
+          </div>
+          <button class="btn-ss btn-danger-ss" onclick="confirmResetProgress()">
+            <i class="fas fa-rotate-left"></i> Reset Progress
+          </button>
+        </div>
+        <div class="settings-row">
+          <div class="settings-row-left">
+            <h6>Export Data</h6>
+            <p>Download a copy of your tasks and progress data</p>
+          </div>
+          <button class="btn-ss btn-secondary-ss" onclick="exportData()">
+            <i class="fas fa-download"></i> Export JSON
+          </button>
+        </div>
+      </div>
+
+      <!-- About App -->
+      <div class="settings-section">
+        <div class="settings-section-header">
+          <i class="fas fa-circle-info" style="color:var(--accent-4);"></i> About
+        </div>
+        <div class="settings-row">
+          <div class="settings-row-left">
+            <h6>Study Space</h6>
+            <p>Version 1.0.0 — Student Productivity Dashboard</p>
+          </div>
+          <span style="font-size:12px; color:var(--text-secondary);">Built with ❤️</span>
+        </div>
+      </div>
+
+    </div>
+    <!-- END SETTINGS -->
+
+  </main>
+</div>
+
+<!-- TOAST CONTAINER -->
+<div class="toast-container" id="toast-container"></div>
+
+<!-- CONFIRM MODAL -->
+<div class="modal-overlay" id="confirm-modal" style="display:none;" onclick="closeModal(event)">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <h4 id="modal-title">Confirm Action</h4>
+    <p id="modal-desc">Are you sure you want to proceed?</p>
+    <div class="modal-actions">
+      <button class="btn-ss btn-secondary-ss" onclick="document.getElementById('confirm-modal').style.display='none'">Cancel</button>
+      <button class="btn-ss btn-danger-ss" id="modal-confirm-btn">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+// ===========================
+// DATA & STATE
+// ===========================
+const QUOTES = [
+  { text: "The secret of getting ahead is getting started.", author: "Mark Twain" },
+  { text: "Success is the sum of small efforts, repeated day in and day out.", author: "Robert Collier" },
+  { text: "Study hard what interests you the most in the most undisciplined, irreverent way possible.", author: "Richard Feynman" },
+  { text: "The beautiful thing about learning is that no one can take it away from you.", author: "B.B. King" },
+  { text: "Education is the most powerful weapon which you can use to change the world.", author: "Nelson Mandela" },
+  { text: "An investment in knowledge pays the best interest.", author: "Benjamin Franklin" },
+  { text: "The more that you read, the more things you will know.", author: "Dr. Seuss" },
+  { text: "Live as if you were to die tomorrow. Learn as if you were to live forever.", author: "Mahatma Gandhi" },
+];
+
+let tasks = [];
+let progressChart = null;
+let timerInterval = null;
+let timerRunning = false;
+let timerSeconds = 25 * 60;
+let timerTotal = 25 * 60;
+let timerMode = 'focus';
+let sessionCount = 1;
+let completedSessions = 0;
+let currentTrack = -1;
+let trackIntervals = [null, null, null];
+let trackProgress = [0, 0, 0];
+
+const TRACK_LABELS = { 0: 'Focus Session', 1: 'Short Break', 2: 'Long Break' };
+const MODE_LABELS = { focus: 'Focus Session', short: 'Short Break', long: 'Long Break' };
+
+// ===========================
+// AUTH FUNCTIONS
+// ===========================
+function showPage(page) {
+  document.getElementById('login-page').style.display = page === 'login' ? 'block' : 'none';
+  document.getElementById('signup-page').style.display = page === 'signup' ? 'block' : 'none';
+}
+
+function handleLogin() {
+  const email = document.getElementById('login-email').value.trim();
+  const pass  = document.getElementById('login-password').value;
+  const errEl = document.getElementById('login-error');
+
+  errEl.style.display = 'none';
+
+  if (!email || !pass) {
+    errEl.textContent = 'Please fill in all fields.';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  const users = JSON.parse(localStorage.getItem('ss_users') || '[]');
+  const user = users.find(u => u.email === email && u.password === pass);
+
+  if (!user) {
+    errEl.textContent = 'Invalid email or password.';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  localStorage.setItem('ss_logged_in', JSON.stringify({ email: user.email, name: user.name }));
+  initApp();
+}
+
+function handleSignup() {
+  const name    = document.getElementById('signup-name').value.trim();
+  const email   = document.getElementById('signup-email').value.trim();
+  const pass    = document.getElementById('signup-password').value;
+  const confirm = document.getElementById('signup-confirm').value;
+  const errEl   = document.getElementById('signup-error');
+
+  errEl.style.display = 'none';
+
+  if (!name || !email || !pass || !confirm) {
+    errEl.textContent = 'Please fill in all fields.';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  if (pass !== confirm) {
+    errEl.textContent = 'Passwords do not match.';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  if (pass.length < 6) {
+    errEl.textContent = 'Password must be at least 6 characters.';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  const users = JSON.parse(localStorage.getItem('ss_users') || '[]');
+
+  if (users.find(u => u.email === email)) {
+    errEl.textContent = 'An account with this email already exists.';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  users.push({ name, email, password: pass });
+  localStorage.setItem('ss_users', JSON.stringify(users));
+  localStorage.setItem('ss_logged_in', JSON.stringify({ email, name }));
+
+  initApp();
+}
+
+function handleLogout() {
+  localStorage.removeItem('ss_logged_in');
+  document.getElementById('app-wrapper').style.display = 'none';
+  document.getElementById('auth-wrapper').style.display = 'flex';
+  showPage('login');
+  document.getElementById('login-email').value = '';
+  document.getElementById('login-password').value = '';
+  if (timerInterval) clearInterval(timerInterval);
+}
+
+// ===========================
+// APP INITIALIZATION
+// ===========================
+function initApp() {
+  const user = JSON.parse(localStorage.getItem('ss_logged_in') || 'null');
+  if (!user) return;
+
+  document.getElementById('auth-wrapper').style.display = 'none';
+  document.getElementById('app-wrapper').style.display = 'flex';
+
+  // Set user info
+  const name = user.name;
+  document.getElementById('welcome-name').textContent = name;
+  document.getElementById('sidebar-username').textContent = name;
+  document.getElementById('sidebar-avatar').textContent = name.charAt(0).toUpperCase();
+  document.getElementById('settings-name').placeholder = name;
+
+  // Date
+  document.getElementById('topbar-date').textContent = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
+
+  // Greeting
+  const hour = new Date().getHours();
+  let greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
+  document.getElementById('topbar-subtitle').textContent = greeting + ' — ready to study?';
+
+  // Random quote
+  const q = QUOTES[Math.floor(Math.random() * QUOTES.length)];
+  document.getElementById('quote-text').textContent = q.text;
+  document.getElementById('quote-author').textContent = '— ' + q.author;
+
+  // Dark mode
+  const dark = localStorage.getItem('ss_dark') === 'true';
+  document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+  document.getElementById('dark-mode-toggle').checked = dark;
+
+  // Load data
+  loadTasks();
+  loadProgress();
+  updateDashboardStats();
+  navigateTo('dashboard');
+}
+
+// ===========================
+// NAVIGATION
+// ===========================
+function navigateTo(page) {
+  document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.sidebar-nav-item').forEach(i => i.classList.remove('active'));
+
+  const el = document.getElementById('page-' + page);
+  if (el) el.classList.add('active');
+
+  const navItem = document.querySelector('[data-page="' + page + '"]');
+  if (navItem) navItem.classList.add('active');
+
+  // Page titles
+  const titles = {
+    dashboard: ['Dashboard', ''],
+    about:     ['About', 'Learn about Study Space'],
+    studyroom: ['Study Room', 'Manage your tasks'],
+    timer:     ['Pomodoro Timer', 'Stay focused with timed sessions'],
+    music:     ['Study Music', 'Ambient sounds for deep focus'],
+    progress:  ['Progress Tracker', 'Track your weekly study hours'],
+    settings:  ['Settings', 'Customize your experience'],
+  };
+
+  if (titles[page]) {
+    document.getElementById('topbar-title').textContent = titles[page][0];
+    document.getElementById('topbar-subtitle').textContent = titles[page][1];
+  }
+
+  if (page === 'progress') {
+    setTimeout(() => initProgressChart(), 100);
+  }
+
+  if (page === 'dashboard') {
+    updateDashboardStats();
+  }
+
+  closeSidebar();
+}
+
+// ===========================
+// SIDEBAR
+// ===========================
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sidebar-overlay').classList.toggle('show');
+}
+
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebar-overlay').classList.remove('show');
+}
+
+// ===========================
+// TASK MANAGER
+// ===========================
+function loadTasks() {
+  tasks = JSON.parse(localStorage.getItem('ss_tasks') || '[]');
+  renderTasks();
+}
+
+function saveTasks() {
+  localStorage.setItem('ss_tasks', JSON.stringify(tasks));
+  updateDashboardStats();
+}
+
+function addTask() {
+  const input = document.getElementById('task-input');
+  const priority = document.getElementById('task-priority').value;
+  const text = input.value.trim();
+
+  if (!text) {
+    showToast('Please enter a task description.', 'warning');
+    return;
+  }
+
+  tasks.unshift({
+    id: Date.now(),
+    text,
+    priority,
+    completed: false,
+    createdAt: new Date().toISOString(),
+  });
+
+  input.value = '';
+  saveTasks();
+  renderTasks();
+  showToast('Task added!', 'success');
+}
+
+function toggleTask(id) {
+  const task = tasks.find(t => t.id === id);
+  if (task) {
+    task.completed = !task.completed;
+    saveTasks();
+    renderTasks();
+  }
+}
+
+function deleteTask(id) {
+  tasks = tasks.filter(t => t.id !== id);
+  saveTasks();
+  renderTasks();
+  showToast('Task removed.', 'info');
+}
+
+function renderTasks() {
+  const list = document.getElementById('task-list');
+  const total = tasks.length;
+  const done  = tasks.filter(t => t.completed).length;
+  const pending = total - done;
+
+  document.getElementById('sr-total').textContent = total;
+  document.getElementById('sr-done').textContent = done;
+  document.getElementById('sr-pending').textContent = pending;
+
+  if (total === 0) {
+    list.innerHTML = `<li><div class="empty-state"><i class="fas fa-inbox"></i><p>No tasks yet. Add one above!</p></div></li>`;
+    return;
+  }
+
+  list.innerHTML = tasks.map(task => `
+    <li class="task-item ${task.completed ? 'completed' : ''}">
+      <input type="checkbox" class="task-checkbox" ${task.completed ? 'checked' : ''}
+        onchange="toggleTask(${task.id})" />
+      <div class="task-text">
+        <span class="badge-tag badge-${task.priority}">${task.priority}</span>
+        ${escapeHTML(task.text)}
+      </div>
+      <button class="task-delete-btn" onclick="deleteTask(${task.id})" title="Delete">
+        <i class="fas fa-times"></i>
+      </button>
+    </li>
+  `).join('');
+}
+
+function confirmClearTasks() {
+  showModal(
+    'Clear All Tasks',
+    'This will permanently delete all your tasks. This action cannot be undone.',
+    () => {
+      tasks = [];
+      saveTasks();
+      renderTasks();
+      showToast('All tasks cleared.', 'info');
+    }
+  );
+}
+
+function escapeHTML(str) {
+  const div = document.createElement('div');
+  div.appendChild(document.createTextNode(str));
+  return div.innerHTML;
+}
+
+// ===========================
+// DASHBOARD STATS
+// ===========================
+function updateDashboardStats() {
+  const total = tasks.length;
+  const done = tasks.filter(t => t.completed).length;
+  const hours = (JSON.parse(localStorage.getItem('ss_progress') || '[0,0,0,0,0,0,0]')).reduce((a, b) => a + Number(b), 0);
+
+  document.getElementById('dash-total-tasks').textContent = total;
+  document.getElementById('dash-completed').textContent = done;
+  document.getElementById('dash-study-hours').textContent = hours.toFixed(1) + 'h';
+}
+
+// ===========================
+// POMODORO TIMER
+// ===========================
+const CIRCUMFERENCE = 2 * Math.PI * 106;
+
+function setTimerMode(mode, minutes) {
+  if (timerRunning) return;
+  timerMode = mode;
+  timerSeconds = minutes * 60;
+  timerTotal = minutes * 60;
+
+  document.querySelectorAll('.timer-mode-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('mode-' + mode).classList.add('active');
+  document.getElementById('timer-label').textContent = MODE_LABELS[mode];
+
+  const ring = document.getElementById('timer-ring');
+  ring.style.stroke = mode === 'focus' ? 'var(--accent)' : mode === 'short' ? 'var(--accent-2)' : 'var(--accent-3)';
+
+  updateTimerDisplay();
+  updateTimerRing();
+}
+
+function toggleTimer() {
+  if (timerRunning) {
+    pauseTimer();
+  } else {
+    startTimer();
+  }
+}
+
+function startTimer() {
+  timerRunning = true;
+  const btn = document.getElementById('timer-start-btn');
+  btn.innerHTML = '<i class="fas fa-pause"></i> Pause';
+  btn.className = 'timer-btn pause';
+
+  timerInterval = setInterval(() => {
+    if (timerSeconds > 0) {
+      timerSeconds--;
+      updateTimerDisplay();
+      updateTimerRing();
+    } else {
+      clearInterval(timerInterval);
+      timerRunning = false;
+      onTimerFinish();
+    }
+  }, 1000);
+}
+
+function pauseTimer() {
+  clearInterval(timerInterval);
+  timerRunning = false;
+  const btn = document.getElementById('timer-start-btn');
+  btn.innerHTML = '<i class="fas fa-play"></i> Resume';
+  btn.className = 'timer-btn start';
+}
+
+function resetTimer() {
+  clearInterval(timerInterval);
+  timerRunning = false;
+  const mins = timerMode === 'focus' ? 25 : timerMode === 'short' ? 5 : 15;
+  timerSeconds = mins * 60;
+  timerTotal = mins * 60;
+  const btn = document.getElementById('timer-start-btn');
+  btn.innerHTML = '<i class="fas fa-play"></i> Start';
+  btn.className = 'timer-btn start';
+  updateTimerDisplay();
+  updateTimerRing();
+}
+
+function updateTimerDisplay() {
+  const m = Math.floor(timerSeconds / 60).toString().padStart(2, '0');
+  const s = (timerSeconds % 60).toString().padStart(2, '0');
+  document.getElementById('timer-display').textContent = m + ':' + s;
+}
+
+function updateTimerRing() {
+  const progress = timerSeconds / timerTotal;
+  const offset = CIRCUMFERENCE * (1 - progress);
+  document.getElementById('timer-ring').style.strokeDashoffset = offset;
+}
+
+function onTimerFinish() {
+  const btn = document.getElementById('timer-start-btn');
+  btn.innerHTML = '<i class="fas fa-play"></i> Start';
+  btn.className = 'timer-btn start';
+
+  if (timerMode === 'focus') {
+    completedSessions = Math.min(completedSessions + 1, 4);
+    updateSessionDots();
+    showToast('Focus session complete! Take a break 🎉', 'success');
+    if (completedSessions >= 4) {
+      completedSessions = 0;
+      updateSessionDots();
+    }
+  } else {
+    showToast('Break time over — back to work! 📚', 'info');
+  }
+
+  resetTimer();
+}
+
+function updateSessionDots() {
+  const dots = document.querySelectorAll('.session-dot');
+  dots.forEach((d, i) => {
+    d.classList.toggle('done', i < completedSessions);
+  });
+  document.getElementById('session-num').textContent = completedSessions + 1;
+}
+
+// ===========================
+// MUSIC PLAYER (Simulated)
+// ===========================
+function toggleTrack(idx) {
+  if (currentTrack === idx) {
+    stopTrack(idx);
+    currentTrack = -1;
+  } else {
+    if (currentTrack !== -1) stopTrack(currentTrack);
+    currentTrack = idx;
+    playTrack(idx);
+  }
+}
+
+function playTrack(idx) {
+  document.getElementById('play-icon-' + idx).className = 'fas fa-pause';
+  const vizBars = document.querySelectorAll('#viz-' + idx + ' .viz-bar');
+  vizBars.forEach(b => b.classList.add('playing'));
+
+  // Simulate progress bar
+  trackIntervals[idx] = setInterval(() => {
+    trackProgress[idx] = (trackProgress[idx] + 0.5) % 100;
+    document.getElementById('bar-' + idx).style.width = trackProgress[idx] + '%';
+  }, 200);
+}
+
+function stopTrack(idx) {
+  clearInterval(trackIntervals[idx]);
+  document.getElementById('play-icon-' + idx).className = 'fas fa-play';
+  const vizBars = document.querySelectorAll('#viz-' + idx + ' .viz-bar');
+  vizBars.forEach(b => b.classList.remove('playing'));
+}
+
+// ===========================
+// PROGRESS / CHART
+// ===========================
+function loadProgress() {
+  const data = JSON.parse(localStorage.getItem('ss_progress') || '[0,0,0,0,0,0,0]');
+  for (let i = 0; i < 7; i++) {
+    const el = document.getElementById('hours-' + i);
+    if (el) el.value = data[i] || '';
+  }
+}
+
+function saveProgress() {
+  const data = [];
+  for (let i = 0; i < 7; i++) {
+    data.push(parseFloat(document.getElementById('hours-' + i).value) || 0);
+  }
+  localStorage.setItem('ss_progress', JSON.stringify(data));
+  updateProgressStats(data);
+  if (progressChart) {
+    progressChart.data.datasets[0].data = data;
+    progressChart.update();
+  }
+  updateDashboardStats();
+  showToast('Progress saved!', 'success');
+}
+
+function initProgressChart() {
+  const data = JSON.parse(localStorage.getItem('ss_progress') || '[0,0,0,0,0,0,0]');
+  loadProgress();
+  updateProgressStats(data);
+
+  const ctx = document.getElementById('progress-chart');
+  if (!ctx) return;
+
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  const gridColor = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)';
+  const textColor = isDark ? '#9098a9' : '#6b7280';
+
+  if (progressChart) progressChart.destroy();
+
+  progressChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+      datasets: [{
+        label: 'Study Hours',
+        data: data,
+        backgroundColor: [
+          'rgba(224,123,84,0.75)',
+          'rgba(108,99,255,0.75)',
+          'rgba(62,207,142,0.75)',
+          'rgba(245,200,66,0.75)',
+          'rgba(224,123,84,0.75)',
+          'rgba(108,99,255,0.75)',
+          'rgba(62,207,142,0.75)',
+        ],
+        borderRadius: 10,
+        borderSkipped: false,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: ctx => ctx.raw + ' hrs'
+          }
+        }
+      },
+      scales: {
+        x: {
+          grid: { color: gridColor },
+          ticks: { color: textColor, font: { family: 'DM Sans', size: 12 } }
+        },
+        y: {
+          beginAtZero: true,
+          grid: { color: gridColor },
+          ticks: { color: textColor, font: { family: 'DM Sans', size: 12 }, callback: v => v + 'h' }
+        }
+      }
+    }
+  });
+}
+
+function updateProgressStats(data) {
+  const total = data.reduce((a, b) => a + Number(b), 0);
+  const avg = total / 7;
+  const best = Math.max(...data);
+
+  document.getElementById('prog-total').textContent = total.toFixed(1) + 'h';
+  document.getElementById('prog-avg').textContent = avg.toFixed(1) + 'h';
+  document.getElementById('prog-best').textContent = best.toFixed(1) + 'h';
+}
+
+// ===========================
+// SETTINGS
+// ===========================
+function updateUsername() {
+  const input = document.getElementById('settings-name');
+  const name = input.value.trim();
+
+  if (!name) {
+    showToast('Please enter a name.', 'warning');
+    return;
+  }
+
+  const user = JSON.parse(localStorage.getItem('ss_logged_in') || '{}');
+  user.name = name;
+  localStorage.setItem('ss_logged_in', JSON.stringify(user));
+
+  // Update UI
+  document.getElementById('welcome-name').textContent = name;
+  document.getElementById('sidebar-username').textContent = name;
+  document.getElementById('sidebar-avatar').textContent = name.charAt(0).toUpperCase();
+  input.value = '';
+  input.placeholder = name;
+
+  // Update in users list
+  const users = JSON.parse(localStorage.getItem('ss_users') || '[]');
+  const idx = users.findIndex(u => u.email === user.email);
+  if (idx !== -1) { users[idx].name = name; localStorage.setItem('ss_users', JSON.stringify(users)); }
+
+  showToast('Name updated!', 'success');
+}
+
+function toggleDarkMode() {
+  const dark = document.getElementById('dark-mode-toggle').checked;
+  document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+  localStorage.setItem('ss_dark', dark);
+  if (progressChart) {
+    setTimeout(() => initProgressChart(), 100);
+  }
+}
+
+function confirmResetProgress() {
+  showModal(
+    'Reset Progress',
+    'This will clear all your weekly study hour data. Are you sure?',
+    () => {
+      localStorage.setItem('ss_progress', JSON.stringify([0,0,0,0,0,0,0]));
+      loadProgress();
+      if (progressChart) {
+        progressChart.data.datasets[0].data = [0,0,0,0,0,0,0];
+        progressChart.update();
+      }
+      updateProgressStats([0,0,0,0,0,0,0]);
+      updateDashboardStats();
+      showToast('Progress reset.', 'info');
+    }
+  );
+}
+
+function exportData() {
+  const data = {
+    tasks: JSON.parse(localStorage.getItem('ss_tasks') || '[]'),
+    progress: JSON.parse(localStorage.getItem('ss_progress') || '[]'),
+    user: localStorage.getItem('ss_logged_in'),
+    exportedAt: new Date().toISOString(),
+  };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'study-space-data.json';
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('Data exported!', 'success');
+}
+
+// ===========================
+// TOAST NOTIFICATIONS
+// ===========================
+function showToast(message, type = 'info') {
+  const icons = { success: 'fa-circle-check', info: 'fa-circle-info', warning: 'fa-triangle-exclamation' };
+  const container = document.getElementById('toast-container');
+
+  const toast = document.createElement('div');
+  toast.className = 'toast ' + type;
+  toast.innerHTML = `
+    <i class="fas ${icons[type]} toast-icon"></i>
+    <span class="toast-text">${message}</span>
+  `;
+
+  container.appendChild(toast);
+
+  setTimeout(() => {
+    toast.classList.add('removing');
+    setTimeout(() => toast.remove(), 300);
+  }, 3000);
+}
+
+// ===========================
+// CONFIRM MODAL
+// ===========================
+function showModal(title, desc, onConfirm) {
+  document.getElementById('modal-title').textContent = title;
+  document.getElementById('modal-desc').textContent = desc;
+  document.getElementById('confirm-modal').style.display = 'flex';
+
+  const btn = document.getElementById('modal-confirm-btn');
+  btn.onclick = () => {
+    document.getElementById('confirm-modal').style.display = 'none';
+    onConfirm();
+  };
+}
+
+function closeModal(event) {
+  document.getElementById('confirm-modal').style.display = 'none';
+}
+
+// ===========================
+// STARTUP
+// ===========================
+(function init() {
+  const user = JSON.parse(localStorage.getItem('ss_logged_in') || 'null');
+  if (user) {
+    initApp();
+  } else {
+    document.getElementById('auth-wrapper').style.display = 'flex';
+    showPage('login');
+  }
+
+  // Initialize timer ring
+  const ring = document.getElementById('timer-ring');
+  if (ring) {
+    ring.style.strokeDasharray = CIRCUMFERENCE;
+    ring.style.strokeDashoffset = 0;
+  }
+})();
+</script>
+
+</body>
+</html>
